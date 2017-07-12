@@ -91,7 +91,6 @@ public class MainpageController {
 
     public void onLoadFile(){
 
-        TableviewController tcc;
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select DataFile");
         File loadFile = fileChooser.showOpenDialog(_stage);
@@ -192,6 +191,38 @@ public class MainpageController {
             return;
         }
     }
+
+    public void onLoadAssociationFile(){
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select DataFile");
+        File loadFile = fileChooser.showOpenDialog(_stage);
+
+        if(loadFile == null)
+            return;
+
+        Dataset<String> associations = FileTools.loadSet(loadFile);
+        ObservableList<String[]> associationsList = FXCollections.observableArrayList(associations.getRecords());
+
+        _associationNamesListObject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+
+            clearTable();
+            if(_associationSet != null && _associationNamesListObject.getSelectionModel().getSelectedIndex() < 0)
+                return;
+            _filenameListObject.getSelectionModel().clearSelection();
+            createTable(associations);
+
+        });
+
+        _associationSetsList.clear();
+        _associationSet = associations;
+        _associationSetsList.add(loadFile.getName());
+        refreshFileList(_associationNamesListObject, _associationSetsList);
+
+        _createdatafilebutton.setDisable(false);
+        _removeAssociationBtn.setDisable(false);
+    }
+
 
     public void onBuildAssociations(){
         creatingassociationslabel.setText("Creating Associations");

@@ -19,8 +19,11 @@ public class SetJoiner {
                     for(int i = 0; i < set.count(); i++) {
 
                              if(set.getRecord(i)[set.idCol].equalsIgnoreCase(association[0]) ||
-                                    set.getRecord(i)[set.idCol].equalsIgnoreCase(association[2]))
-                                joinedSets.addRecord(set.getRecord(i));
+                                    set.getRecord(i)[set.idCol].equalsIgnoreCase(association[2])) {
+
+                                 if (!joinedSets.contains(set.getRecord(i)[set.idCol], set.idCol))
+                                     joinedSets.addRecord(set.getRecord(i));
+                             }
 
                     }
                     updateProgress(progress, association.length);

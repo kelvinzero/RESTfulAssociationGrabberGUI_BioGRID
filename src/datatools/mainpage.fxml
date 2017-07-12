@@ -25,7 +25,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onLoadFile" text="Load File" />
+                  <MenuItem mnemonicParsing="false" onAction="#onLoadFile" text="Load Data File" />
+                  <MenuItem mnemonicParsing="false" onAction="#onLoadAssociationFile" text="Load Association File" />
                   <MenuItem mnemonicParsing="false" onAction="#onSaveFile" text="Save File" />
                   <MenuItem mnemonicParsing="false" onAction="#onQuit" text="Quit" />
             </items>
