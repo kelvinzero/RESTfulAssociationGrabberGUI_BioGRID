@@ -41,16 +41,16 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ListView fx:id="_filenameListObject" layoutY="28.0" maxHeight="143.0" prefHeight="67.0" prefWidth="140.0" />
-            <Button fx:id="removefilebutton" disable="true" layoutX="20.0" layoutY="109.0" mnemonicParsing="false" onAction="#onDeleteFile" text="Remove Set" />
-            <Button fx:id="buildassociationsbutton" disable="true" layoutX="-13.0" layoutY="150.0" mnemonicParsing="false" onAction="#onBuildAssociations" text="Build Associations File" />
+            <ListView fx:id="lview_dataFiles" layoutY="28.0" maxHeight="143.0" prefHeight="67.0" prefWidth="140.0" />
+            <Button fx:id="btn_removeDatafile" disable="true" layoutX="20.0" layoutY="109.0" mnemonicParsing="false" onAction="#onDeleteFile" text="Remove Set" />
+            <Button fx:id="btn_buildAssociationList" disable="true" layoutX="-13.0" layoutY="150.0" mnemonicParsing="false" onAction="#onBuildAssociations" text="Build Associations File" />
          </children>
       </Pane>
-      <TableView fx:id="datatableObject" layoutX="27.0" layoutY="352.0" prefHeight="292.0" prefWidth="758.0">
+      <TableView fx:id="tbl_dataTable" layoutX="27.0" layoutY="352.0" prefHeight="292.0" prefWidth="758.0">
       </TableView>
-      <HBox fx:id="optionsbox" layoutX="27.0" layoutY="324.0" prefHeight="27.0" prefWidth="758.0" />
-      <ProgressBar fx:id="progressbar" layoutX="34.0" layoutY="262.0" prefHeight="32.0" prefWidth="412.0" progress="0.0" />
-      <Label fx:id="creatingassociationslabel" disable="true" layoutX="152.0" layoutY="265.0" prefHeight="27.0" prefWidth="403.0" text="Creating Associations">
+      <HBox fx:id="hbox_optionsBox" layoutX="27.0" layoutY="324.0" prefHeight="27.0" prefWidth="758.0" />
+      <ProgressBar fx:id="pbar_progressbar" layoutX="34.0" layoutY="262.0" prefHeight="32.0" prefWidth="412.0" progress="0.0" />
+      <Label fx:id="lbl_creatingAssociations" disable="true" layoutX="152.0" layoutY="265.0" prefHeight="27.0" prefWidth="403.0" text="Creating Associations">
          <font>
             <Font name="System Bold" size="18.0" />
          </font>
@@ -63,9 +63,9 @@
                   <Font size="18.0" />
                </font>
             </Label>
-            <ListView fx:id="_associationNamesListObject" layoutY="28.0" maxHeight="143.0" prefHeight="67.0" prefWidth="140.0" />
-            <Button fx:id="_removeAssociationBtn" disable="true" layoutX="20.0" layoutY="109.0" mnemonicParsing="false" onAction="#onRemoveAssociation" text="Remove Set" />
-            <Button fx:id="_createdatafilebutton" disable="true" layoutX="14.0" layoutY="154.0" mnemonicParsing="false" onAction="#onJoinFile" text="Create Datafile" />
+            <ListView fx:id="lview_associationFiles" layoutY="28.0" maxHeight="143.0" prefHeight="67.0" prefWidth="140.0" />
+            <Button fx:id="btn_removeAssociationFile" disable="true" layoutX="20.0" layoutY="109.0" mnemonicParsing="false" onAction="#onRemoveAssociation" text="Remove Set" />
+            <Button fx:id="btn_createDataFile" disable="true" layoutX="14.0" layoutY="154.0" mnemonicParsing="false" onAction="#onJoinFile" text="Create Datafile" />
          </children>
       </Pane>
    </children>

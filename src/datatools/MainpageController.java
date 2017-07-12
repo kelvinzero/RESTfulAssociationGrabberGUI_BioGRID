@@ -4,7 +4,6 @@ import datatools.RESTaccess.AssociationIterator;
 import datatools.datahandling.Dataset;
 import datatools.datahandling.FileTools;
 import datatools.datahandling.SetJoiner;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -15,7 +14,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.FileChooser;
@@ -28,29 +26,27 @@ import java.util.List;
 
 public class MainpageController {
 
-    public Label                        creatingassociationslabel;
-    public ProgressBar                  progressbar;
-    public RadioButton                  joinbyassociationbutton;
-    public RadioButton                  joinallrecordsbutton;
-    public ListView                     _associationNamesListObject;
-    public Button                       _removeAssociationBtn;
-    public Button                       _createdatafilebutton;
-    public Label                        iterationsLabel;
+    // FXML Objects
+    public ProgressBar pbar_progressbar;
+    public ListView    lview_dataFiles;
+    public ListView    lview_associationFiles;
+    public Button      btn_removeAssociationFile;
+    public Button      btn_createDataFile;
+    public Button      btn_buildAssociationList;
+    public Button      btn_removeDatafile;
+    public Label       lbl_creatingAssociations;
+    public HBox        hbox_optionsBox;
+    public TableView   tbl_dataTable;
+
+    // member variables
+    static  Stage                       _stage;
     private ArrayList<TableColumn>      _columnHeaders;
     private ObservableList<String[]>    _tableRows;
     private ObservableList<String>      _filenamesList;
     private ObservableList<String>      _associationSetsList;
     private List<Dataset>               _loadedSets;
-    private Dataset _associationSet;
+    private Dataset                     _associationSet;
 
-    public  Button                      buildassociationsbutton;
-    public  Button                      removefilebutton;
-    public  HBox                        optionsbox;
-    public  TableView                   datatableObject;
-
-
-    public  ListView                    _filenameListObject;
-    static  Stage                       _stage;
 
     public MainpageController(){
         _filenamesList = FXCollections.observableArrayList();
@@ -65,7 +61,7 @@ public class MainpageController {
     public void onSaveFile(){
 
         FileChooser fileChooser = new FileChooser();
-        int idx = _filenameListObject.getSelectionModel().getSelectedIndex();
+        int idx = lview_dataFiles.getSelectionModel().getSelectedIndex();
         File loadFile;
 
         if(idx >= 0){
@@ -76,7 +72,7 @@ public class MainpageController {
             FileTools.writeSet(loadFile, _loadedSets.get(idx));
             return;
         }
-        idx = _associationNamesListObject.getSelectionModel().getSelectedIndex();
+        idx = lview_associationFiles.getSelectionModel().getSelectedIndex();
         if(idx >= 0){
             fileChooser.setTitle("Save Association File");
             loadFile = fileChooser.showSaveDialog(_stage);
@@ -103,24 +99,24 @@ public class MainpageController {
 
         _loadedSets.add(dset);
         _filenamesList.add(loadFile.getName());
-        refreshFileList(_filenameListObject, _filenamesList);
-        buildassociationsbutton.setDisable(false);
-        removefilebutton.setDisable(false);
+        refreshFileList(lview_dataFiles, _filenamesList);
+        btn_buildAssociationList.setDisable(false);
+        btn_removeDatafile.setDisable(false);
 
-        _filenameListObject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+        lview_dataFiles.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 
-            if(_filenameListObject.getSelectionModel().getSelectedIndex() < 0)
+            if(lview_dataFiles.getSelectionModel().getSelectedIndex() < 0)
                 return;
 
-            _associationNamesListObject.getSelectionModel().clearSelection();
+            lview_associationFiles.getSelectionModel().clearSelection();
             clearTable();
-            int idx = _filenameListObject.getSelectionModel().getSelectedIndex();
+            int idx = lview_dataFiles.getSelectionModel().getSelectedIndex();
             if(idx >= 0 && idx < _loadedSets.size())
                 createTable(_loadedSets.get(idx));
 
         });
-        _filenameListObject.getSelectionModel().clearSelection();
-        _filenameListObject.getSelectionModel().selectLast();
+        lview_dataFiles.getSelectionModel().clearSelection();
+        lview_dataFiles.getSelectionModel().selectLast();
     }
 
     public void onJoinFile(){
@@ -131,12 +127,12 @@ public class MainpageController {
         Dataset<String> joinedSet = new Dataset<>();
         Task joiner = sj.joinSets(ds1, _associationSet, joinedSet);
 
-        progressbar.progressProperty().unbind();
-        progressbar.progressProperty().bind(joiner.progressProperty());
+        pbar_progressbar.progressProperty().unbind();
+        pbar_progressbar.progressProperty().bind(joiner.progressProperty());
         joiner.setOnSucceeded(event -> {
             _loadedSets.add(joinedSet);
             _filenamesList.add("JoinedSet");
-            refreshFileList(_filenameListObject, _filenamesList);
+            refreshFileList(lview_dataFiles, _filenamesList);
         });
 
         new Thread(joiner).start();
@@ -144,7 +140,7 @@ public class MainpageController {
 
     public Task associationsTask(Dataset<String> associations){
 
-        ObservableList<Integer> idxs = _filenameListObject.getSelectionModel().getSelectedIndices();
+        ObservableList<Integer> idxs = lview_dataFiles.getSelectionModel().getSelectedIndices();
         ArrayList<Dataset<String>> sets = new ArrayList<>();
 
         for(Integer idx : idxs)
@@ -176,18 +172,18 @@ public class MainpageController {
     }
 
     public void onRemoveAssociation(){
-        if(_associationNamesListObject.getItems().size() == 0)
+        if(lview_associationFiles.getItems().size() == 0)
             return;
 
-        int idx = _associationNamesListObject.getSelectionModel().getSelectedIndex();
+        int idx = lview_associationFiles.getSelectionModel().getSelectedIndex();
         if(idx >= 0) {
             _associationSetsList.clear();
-            refreshFileList(_associationNamesListObject, _associationSetsList);
+            refreshFileList(lview_associationFiles, _associationSetsList);
         }
 
-        if(_associationNamesListObject.getItems().size() == 0){
-            _removeAssociationBtn.setDisable(true);
-            _createdatafilebutton.setDisable(true);
+        if(lview_associationFiles.getItems().size() == 0){
+            btn_removeAssociationFile.setDisable(true);
+            btn_createDataFile.setDisable(true);
             return;
         }
     }
@@ -204,32 +200,36 @@ public class MainpageController {
         Dataset<String> associations = FileTools.loadSet(loadFile);
         ObservableList<String[]> associationsList = FXCollections.observableArrayList(associations.getRecords());
 
-        _associationNamesListObject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-
-            clearTable();
-            if(_associationSet != null && _associationNamesListObject.getSelectionModel().getSelectedIndex() < 0)
-                return;
-            _filenameListObject.getSelectionModel().clearSelection();
-            createTable(associations);
-
-        });
+        setAssociationListener(associations);
 
         _associationSetsList.clear();
         _associationSet = associations;
         _associationSetsList.add(loadFile.getName());
-        refreshFileList(_associationNamesListObject, _associationSetsList);
+        refreshFileList(lview_associationFiles, _associationSetsList);
 
-        _createdatafilebutton.setDisable(false);
-        _removeAssociationBtn.setDisable(false);
+        btn_createDataFile.setDisable(false);
+        btn_removeAssociationFile.setDisable(false);
     }
 
 
+    void setAssociationListener(Dataset<String> associations){
+        lview_associationFiles.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            clearTable();
+
+            if(_associationSet != null && lview_associationFiles.getSelectionModel().getSelectedIndex() < 0)
+                return;
+            lview_dataFiles.getSelectionModel().clearSelection();
+            createTable(associations);
+
+        });
+    }
+
     public void onBuildAssociations(){
-        creatingassociationslabel.setText("Creating Associations");
-        creatingassociationslabel.setDisable(false);
+        lbl_creatingAssociations.setText("Creating Associations");
+        lbl_creatingAssociations.setDisable(false);
         Dataset<String> associations = new Dataset<>();
         Task grabber = associationsTask(associations);
-        List<String> names = _filenameListObject.getSelectionModel().getSelectedItems();
+        List<String> names = lview_dataFiles.getSelectionModel().getSelectedItems();
         StringBuilder aName = new StringBuilder();
         for(String n : names){
             aName.append(n.substring(0, 3)).append("_");
@@ -239,73 +239,53 @@ public class MainpageController {
                 grabber.cancel();
         });
 
-        progressbar.progressProperty().unbind();
-        progressbar.progressProperty().bind(grabber.progressProperty());
+        pbar_progressbar.progressProperty().unbind();
+        pbar_progressbar.progressProperty().bind(grabber.progressProperty());
 
-        _associationNamesListObject.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            clearTable();
-
-            if(_associationSet != null && _associationNamesListObject.getSelectionModel().getSelectedIndex() < 0)
-                return;
-            _filenameListObject.getSelectionModel().clearSelection();
-            createTable(associations);
-
-        });
+        setAssociationListener(associations);
 
         grabber.setOnSucceeded(event -> {
-            _createdatafilebutton.setDisable(false);
-            _removeAssociationBtn.setDisable(false);
+            btn_createDataFile.setDisable(false);
+            btn_removeAssociationFile.setDisable(false);
             _associationSetsList.clear();
             _associationSet = associations;
             _associationSetsList.add(aName.toString());
-            refreshFileList(_associationNamesListObject, _associationSetsList);
-            if(_filenameListObject.getItems().size() >= 2){
-                joinbyassociationbutton.setDisable(false);
-            }
-            creatingassociationslabel.setText("Complete");
-            creatingassociationslabel.setDisable(true);
-            progressbar.progressProperty().unbind();
-            progressbar.progressProperty().setValue(0);
+            refreshFileList(lview_associationFiles, _associationSetsList);
+            lbl_creatingAssociations.setText("Complete");
+            lbl_creatingAssociations.setDisable(true);
+            pbar_progressbar.progressProperty().unbind();
+            pbar_progressbar.progressProperty().setValue(0);
         });
 
         new Thread(grabber).start();
-
-
-
     }
-
 
     public void onDeleteFile(){
 
-        ObservableList<Integer> selectedIndices = _filenameListObject.getSelectionModel().getSelectedIndices();
+        ObservableList<Integer> selectedIndices = lview_dataFiles.getSelectionModel().getSelectedIndices();
 
         for(Integer index : selectedIndices){
-
-            // delete the list item
             _filenamesList.remove(index.intValue());
-            refreshFileList(_filenameListObject, _filenamesList);
-            //_filenameListObject.getItems().remove(index.intValue());
-            //_filenameListObject.getSelectionModel().clearSelection();
+            refreshFileList(lview_dataFiles, _filenamesList);
             _loadedSets.remove(index.intValue());
-            _filenameListObject.refresh();
+            lview_dataFiles.refresh();
             clearTable();
         }
     }
 
-    void clearTable(){
+    private void clearTable(){
         // clear the table
-        datatableObject.getItems().clear();
-        datatableObject.getColumns().clear();
-        optionsbox.getChildren().clear();
+        tbl_dataTable.getItems().clear();
+        tbl_dataTable.getColumns().clear();
+        hbox_optionsBox.getChildren().clear();
     }
 
-    // fills the table with a dataset
-    public void createTable(Dataset<String> dataset){
+    private void createTable(Dataset<String> dataset){
         if(dataset == null || dataset.count() == 0)
             return;
         _tableRows = FXCollections.observableArrayList(dataset.getRecords());
         addColumnsToTable(dataset.getRecord(0));
-        datatableObject.setItems(_tableRows);
+        tbl_dataTable.setItems(_tableRows);
         addItemsToHeaderBox(dataset);
     }
 
@@ -329,7 +309,7 @@ public class MainpageController {
         idgroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             dataset.setIdCol(rbtns.indexOf(newValue));
         });
-        optionsbox.getChildren().addAll(rbtns);
+        hbox_optionsBox.getChildren().addAll(rbtns);
     }
 
 
@@ -349,7 +329,7 @@ public class MainpageController {
             });
 
             tc.setPrefWidth(90);
-            datatableObject.getColumns().addAll(tc);
+            tbl_dataTable.getColumns().addAll(tc);
             _columnHeaders.add(tc);
         }
     }

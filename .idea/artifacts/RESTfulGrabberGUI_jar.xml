@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RESTfulGrabberGUI:jar">
+    <output-path>$PROJECT_DIR$</output-path>
+    <root id="archive" name="RESTfulGrabberGUI.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/manifests/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="RESTfulGrabberGUI" />
+      <element id="extracted-dir" path="C:/Program Files (x86)/scala/lib/scala-library.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Program Files (x86)/scala/lib/scala-parser-combinators_2.12-1.0.5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Program Files (x86)/scala/lib/scala-reflect.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Program Files (x86)/scala/lib/scala-swing_2.12-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/Program Files (x86)/scala/lib/scala-xml_2.12-1.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/jocl-2.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/jocl-blast-0.11.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/gluonhq/charm-down-desktop/2.0.1/charm-down-desktop-2.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/gluonhq/charm-down-common/2.0.1/charm-down-common-2.0.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/charm-down-core-3.0.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
